@@ -61,6 +61,14 @@ io.on('connection', (sock) => {
     socket.broadcast.to('room1').emit('updatedMovement', socket.square);
   });
 
+  socket.on('textUpdate', (data) => {
+    socket.text = {
+      hash: xxh.h32(`${data}${Date.now()}`, 0xCAFEBABE).toString(16),
+      txt: data,
+    };
+    io.sockets.in('room1').emit('updatedText', socket.text);
+  });
+
   socket.on('disconnect', () => {
     io.sockets.in('room1').emit('disconnect', socket.square.hash);
 
